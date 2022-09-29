@@ -11,21 +11,26 @@ import {
   Modal
 } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
+import Dropdown from "./components/Dropdown";
 
 const Menu = () => {
+  const filter =["Name","Status","Species","Type","Gender"]
   const [modalVisible, setModalVisible] = useState(false);
   const [modalItem, setModalItem] = useState("");
   const [text, onChangeText]=useState("")
   const [data_filtrada,setDataFiltrada]=useState([]);
   const criterio=["Name","Status","Species","Type","Gender"]
   const [criterioElegido,setCriterio]=useState("");
+  const [selectedFilter, setSelectedFilter] = useState("");
   const obtener=async()=> {
-    const data= await fetch('https://rickandmortyapi.com/api/character/?'+criterioElegido.toLowerCase()+"="+text).then(response => response.json());
+    const data= await fetch('https://rickandmortyapi.com/api/character/?'+selectedFilter.toLowerCase()+"="+text).then(response => response.json());
     setDataFiltrada(data.results);
     console.log(data_filtrada);
 }
 
-
+const selectFilter = (item) => {
+  setSelectedFilter(item);
+};
   const renderItem = ({item}) => (
       <View>
           <Image style={styles.image} source={{uri: item.image}} />
@@ -41,31 +46,31 @@ const Menu = () => {
           <TextInput placeholder="Keyword" style={styles.inputText} placeholderTextColor="white" onChangeText={(text) => {onChangeText(text)}} value={text}></TextInput>
         </View>
         <Text style={styles.criterio}>Using the filter</Text>
-        <View style={styles.pickerCont}>
-        <SelectDropdown
-          data={criterio}
-          onSelect={(selectedItem, index) => {
-            setCriterio(selectedItem);
-            }}
-          buttonTextAfterSelection={(selectedItem, index) => {
-            return selectedItem
-          }}
-          rowTextForSelection={(item, index) => {
-            return item
-          }}
-          defaultButtonText={"Filter"}
-          buttonStyle={{height:45,width:175,borderRadius:20,backgroundColor:"#0096c7"}}
-          buttonTextStyle={{color:'white',fontSize:15}}
-          />
-        </View>
+        <Dropdown
+                value={selectedFilter}
+                items={filter}
+                name={"Filter"}
+                onSelect={(selectFilter)}
+                style={styles.criterio}
+        />
+        
 
         <View style={styles.sumbitContainer}>
           <TouchableOpacity style={styles.submit} disabled={criterioElegido==""?true:false} onPress={()=>{obtener();}} >
-            <Text style={styles.sumbitText}>Search</Text>
+            <Image style={styles.sumbitImage} source={require('./lupa.png')}></Image>
           </TouchableOpacity>
         </View>
-
-        <FlatList style={{flex:1,top:160}}
+        <View
+          style={{
+          borderBottomColor: 'black',
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          width:"90%",
+          borderWidth:2,
+          borderRadius:40,
+          top:90
+          }}
+        />
+        <FlatList style={{flex:1,top:110}}
           key={item => item.id}
           data={data_filtrada}
           renderItem={renderItem}
@@ -101,13 +106,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
 inputView:{
-    width:"60%",
+    width:"40%",
     backgroundColor:"#0096c7",
     borderRadius:25,
-    height:50,
+    height:40,
     justifyContent:"center",
     padding:20,
-    top:"10%"
+    top:65
   },
   inputText:{
     height:80,
@@ -117,34 +122,37 @@ inputView:{
     textAlignVertical:'center',
   },
   titulo:{
-    top:"10%",
+    top:60,
       fontSize:14,
       fontWeight:"900"
   },
   sumbitContainer:{
-    position:"absolute"
+    top:55,
+    paddingLeft:"80%"
   },
-  sumbitText:{
-    width:130,
+  sumbitImage:{
+    width:35,
     backgroundColor:"#0096c7",
-    borderRadius:25,
-    height:40,
+    borderRadius:20,
+    borderWidth:1,
+    borderColor:"black",
+    height:35,
     color:'white',
     textAlign:'center',
     textAlignVertical:'center',
-    top:220,
-    fontSize:17
+    fontSize:17,
+    justifyContent:"flex-end"
   },
   criterio:{
-    top:"12%",
-      fontSize:14,
+    top:85,
+      fontSize:15,
       fontWeight:"900"
   },
   pickerCont:{
     alignContent:'center',
     justifyContent:'center',
     alignSelf:'center',
-    top:"12%"
+    top:60
   },
   name: {
     textAlign:'center',
