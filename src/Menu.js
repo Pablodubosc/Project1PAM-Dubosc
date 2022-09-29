@@ -56,7 +56,7 @@ const selectFilter = (item) => {
         
 
         <View style={styles.sumbitContainer}>
-          <TouchableOpacity style={styles.submit} disabled={criterioElegido==""?true:false} onPress={()=>{obtener();}} >
+          <TouchableOpacity style={styles.submit} disabled={selectedFilter==""?true:false} onPress={()=>{obtener();}} >
             <Image style={styles.sumbitImage} source={require('./lupa.png')}></Image>
           </TouchableOpacity>
         </View>
