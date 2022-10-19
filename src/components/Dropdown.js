@@ -1,70 +1,94 @@
-import { useState } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+// React
+import { View, TouchableOpacity, Image, Text, StyleSheet } from 'react-native';
+import { useState } from 'react';
 
-const Dropdown = ({
-  value = {},
-  items = [],
-  name = "",
-  onSelect = () => {},
-}) => {
-  const [showOptions, setShowOptions] = useState(false);
-  return (
-    <View>
-      <TouchableOpacity
-        style={styles.dropdownStyle}
-        activeOpacity={0.8}
-        onPress={() => {
-          setShowOptions(!showOptions);
-        }}
-      >
-        <Text style={{
-                 color:"white",
-                 fontSize:17,
-                 textAlign:"center",
-                 textAlignVertical:"center"
-                }}>{value}</Text>
-      </TouchableOpacity>
-      {showOptions && (
-        <View>
-          {items.map((val, i) => {
-            return (
-              <TouchableOpacity
-                key={String(i)}
-                style={{
-                  backgroundColor: "#90e0ef",
-                  top:"90%"
-                }}
-                onPress={() => {
-                  setShowOptions(false);
-                  onSelect(val);
-                }}
-              >
-                <Text style={{
-                  color:"black"
-                }}>{val}</Text>
-              </TouchableOpacity>
-            );
-          })}
+
+export default function Dropdown({ style, options, filterOptions, setOptions }) {
+    const [visibility, optionsVisibility] = useState(false);
+
+    const dropdownOptions = (option) => {
+        optionsVisibility(false);
+        setOptions(option);
+    }
+
+    return (
+        <View style = {[style, styles.options]}>
+            <View style = {styles.row}>
+                <Text style= {styles.text}> {filterOptions} </Text>
+
+                <TouchableOpacity onPress = {() => optionsVisibility(prevVisibility => !prevVisibility)} style = {styles.botonDesplegable}>
+                    <Image source = {require('../../assets/flecha.png')} style = {styles.moreIcon} />
+                </TouchableOpacity> 
+            </View>
+
+            {visibility && (
+                <View style = {styles.optionsBox}>
+                    {options.map(option => (
+                        <TouchableOpacity onPress = {() => dropdownOptions(option)} key = {option} ><Text style = {styles.opciones}>{option}</Text></TouchableOpacity>
+                    ))}
+                </View>
+            )}
         </View>
-      )}
-    </View>
-  );
-};
+    )
+}
 
 const styles = StyleSheet.create({
-  dropdownStyle: {
-    backgroundColor: "#0096c7",
-    width:100,
-    height:30,
-    top:90,
-    borderRadius:25,
-  },
-});
+    row: {
+        display: 'flex',
+        flexDirection: 'row',
+        height: 30,
+        fontSize: 17,
+        backgroundColor: "#0096c7",
+        borderRadius:25,
+    },
 
-export default Dropdown;
+    botonDesplegable: {
+        marginLeft: 'auto',
+        backgroundColor: "#0096c7",
+        top:1,
+        height:24,
+        width:33,
+        right:4,
+        borderRadius:20,
+    },
+
+    moreIcon: {
+        width: 18, 
+        height: 18,
+        top:6,
+        right:-10,
+        backgroundColor: "#0096c7",
+    },
+
+    text: {
+        fontSize: 15,
+        left:5,
+        textAlignVertical:'center',
+        color:"white",
+    },
+    
+    filterOptions: {
+        backgroundColor: "#0096c7",
+        borderWidth: 1,
+        height: 34,
+        borderRadius:25,
+        textAlignVertical:'center',
+
+    },
+
+    optionBox: {
+        backgroundColor: "#0096c7",
+        borderRadius:25,      
+    },
+    
+    opciones: {
+        borderWidth: 1,
+        paddingLeft: 5,
+        fontSize: 15,
+        backgroundColor: "#0096c7",
+        borderRadius:25,
+        textAlignVertical:'center',
+        textAlign:"center",
+        color:"white",
+    }
+});
