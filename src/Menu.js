@@ -57,52 +57,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0fbfc',
     alignItems: 'center',
     justifyContent: 'flex-start',
-  },
-  pickerCont:{
-    alignContent:'center',
-    justifyContent:'center',
-    alignSelf:'center',
-    top:50
-  },
-  name: {
-    textAlign:'center',
-    textAlignVertical:'center',
-    fontSize: 15,
-    fontWeight: 'bold',
-    top:5,
-    height:40
-  },
-  info: {
-    backgroundColor:"#90e0ef",
-    borderRadius:25,
-    height:20,
-    fontSize: 15,
-    fontWeight: 'bold',
-    margin: 10,
-    width: '50%',
-    textAlign:'center',
-    textAlignVertical:'center',
-    alignSelf:'center',
-  },
-  characters: {
-    flex: 1,
-    backgroundColor: '#e0fbfc',
-    alignItems: 'center',
-    justifyContent:'center',
-  },
-  separator: {
-    width: '100%',
-    height: 2,
-    backgroundColor: 'grey',
-  },
-  image: {
-    alignContent:'center',
-    justifyContent:'center',
-    width: 100,
-    height: 100,
-    top: "8%",
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor:"red"
   }
 });
