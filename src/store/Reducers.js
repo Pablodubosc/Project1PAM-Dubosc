@@ -6,6 +6,12 @@ export const Reducers = createSlice({
         searchModalVisible : false,
         modalItem : "",
         modalCharacterVisible : false,
+        lastFilter : 'name',
+        lastFilterOptions : ['name', 'species', 'type'],
+        genderFilter : 'no gender',
+        genderFilterOptions: ['no gender','male', 'female', 'unknown', 'genderless'],
+        statusFilter : 'no status',
+        statusFilterOptions: ['no status','alive', 'dead', 'unknown'],
     },
     reducers:{
         setSearchModalVisible: (state,action) =>
@@ -20,9 +26,33 @@ export const Reducers = createSlice({
         {
          state.modalCharacterVisible = action.payload;
         },
+        setFilters:(state,action) =>
+        {
+            if((state.lastFilterOptions).indexOf(action.payload) != -1)
+            {
+                console.log('entra last')
+                state.lastFilter = action.payload
+            }
+            else if((state.genderFilterOptions).indexOf(action.payload) != -1)
+            {
+                console.log('entra gender')
+                state.genderFilter = action.payload
+            }
+            else if((state.statusFilterOptions).indexOf(action.payload) != -1)
+            {
+                console.log('entra status')
+                state.statusFilter = action.payload
+            }
+        },
+        resetFilters:(state,action) =>
+        {
+            state.genderFilter = 'no gender'
+            state.statusFilter = 'no status'
+            state.lastFilter = 'name'
+        },
     }
 })
 
-export const {setSearchModalVisible, setModalItem, setModalCharacterVisible,  } = Reducers.actions;
+export const {setSearchModalVisible, setModalItem, setModalCharacterVisible, setFilters, resetFilters } = Reducers.actions;
 
 export default Reducers.reducer;

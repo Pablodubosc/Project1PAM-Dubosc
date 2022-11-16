@@ -3,10 +3,8 @@ import React, { useEffect, useState } from "react";
 import CharacterItem from './CharacterItem';
 import { useDispatch } from 'react-redux';
 export default function ListOfCharacters({data,getNext,favorites}) {
-  const dispatch = useDispatch();
   const [dataF, setDataF] = useState([]);
   useEffect(() => {
-    console.log(data)
     setDataF(data);
   }, [data])
   const removeFromList = (id)  => {

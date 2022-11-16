@@ -1,12 +1,14 @@
 // React
 import { View, TouchableOpacity, Image, Text, StyleSheet } from 'react-native';
 import { useState } from 'react';
-
-export default function Dropdown({ style, options, filterOptions, setOptions }) {
+import { useDispatch, useSelector } from 'react-redux';
+import { setFilters } from '../store/Reducers';
+export default function Dropdown({ style, options, filterOptions }) {
     const [visibility, optionsVisibility] = useState(false);
+    const dispatch = useDispatch();
     const dropdownOptions = (option) => {
         optionsVisibility(false);
-        setOptions(option);
+        dispatch(setFilters(option))
     }
 
     return (

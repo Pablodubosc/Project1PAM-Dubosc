@@ -5,7 +5,9 @@ import { setModalItem,setModalCharacterVisible, } from '../store/Reducers';
 import { useDispatch, useSelector } from 'react-redux';
 export default function CharacterItem({item,favorite,removeFromList}) {
   const dispatch = useDispatch();  
+
   const { writeCharacterData,deleteCharacterData} = useApi();
+  
     const value = useState(new Animated.Value(0))[0];
     const size = useState(new Animated.Value(1))[0];
     const animateCard = () => {

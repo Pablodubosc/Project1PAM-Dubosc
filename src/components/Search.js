@@ -9,39 +9,41 @@ import {
     Modal
   } from "react-native";
 import Dropdown from "./Dropdown";
-import { setSearchModalVisible} from '../store/Reducers';
+import { setSearchModalVisible,resetFilters} from '../store/Reducers';
 import { useDispatch, useSelector } from 'react-redux';
 
-export default function Search({closeSearch,getCharacters}) {
+export default function Search({getCharacters}) {
     const [text, onChangeText] = useState("");
-    const [lastFilter, setLastFilter] = useState('name');
-    const [genderFilter, setGenderFilter] = useState('none');
-    const [statusFilter, setStatusFilter] = useState('none');
 
+    const {lastFilter,genderFilter,statusFilter,lastFilterOptions,genderFilterOptions,statusFilterOptions}  = useSelector(state => state.application);
     const dispatch = useDispatch();
-    const filterChracters= (genderFilter,statusFilter,lastFilter,text) => {
-      getCharacters(genderFilter == 'none' ? '' : genderFilter,statusFilter == 'none' ? '' : statusFilter,lastFilter,text)
+
+    const filterChracters= () => {
+      getCharacters(genderFilter == 'no gender' ? '' : genderFilter,statusFilter == 'no status' ? '' : statusFilter,lastFilter,text)
     }
    return (
         <View style={styles.container}>
           <View style={styles.borderTop}/>
             <Text style={styles.titulo}>Add filters to search Rick & Morty characters!</Text>
             <Text style={styles.genderText}>Filter by gender:</Text>
-            <Dropdown style = {styles.genderFilter} options = {['none','male', 'female', 'unknown', 'genderless']} filterOptions = {genderFilter} setOptions = {setGenderFilter} />
+            <Dropdown style = {styles.genderFilter} options = {genderFilterOptions} filterOptions = {genderFilter} />
 
             <Text style={styles.statusText}>Filter by status:</Text>
-            <Dropdown style = {styles.statusFilter} options = {['none','alive', 'dead', 'unknown']} filterOptions = {statusFilter} setOptions = {setStatusFilter} />
+            <Dropdown style = {styles.statusFilter} options = {statusFilterOptions} filterOptions = {statusFilter}  />
             
             <Text style={styles.lastFilterText}>Add one last filter:</Text>
-            <Dropdown style = {styles.lastFilter} options = {['name', 'species', 'type']} filterOptions = {lastFilter} setOptions = {setLastFilter} />
+            <Dropdown style = {styles.lastFilter} options = {lastFilterOptions} filterOptions = {lastFilter} />
             
             <View style={styles.inputView}>
               <TextInput placeholder="keyword..." style={styles.inputText} placeholderTextColor="white" onChangeText={(text) => {onChangeText(text)}} value={text}></TextInput>
             </View>
             <View style={styles.borderBottom}/>
-            <TouchableOpacity style={styles.search} onPress={() => {dispatch(setSearchModalVisible(false)); filterChracters(genderFilter,statusFilter,lastFilter,text)}}>
+            <TouchableOpacity style={styles.search} onPress={() => {dispatch(setSearchModalVisible(false)), filterChracters()}}>
               <Text style={styles.searchText}>SEARCH</Text>
               <Image style={styles.sumbitImage} source = {require('../../assets/lupa.png')} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.resetFilters} onPress={() => {dispatch(resetFilters())}}>
+              <Text style={styles.resetFiltersText}>reset filters</Text>
             </TouchableOpacity>
         </View>
   )}
@@ -54,13 +56,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   titulo:{
-    top:120,
+    top:105,
       fontSize:18,
       fontWeight:"900"
   },
 
   genderText:{
-    top:175,
+    top:160,
     right:90,
     fontSize:18,
     fontWeight:"900",
@@ -68,14 +70,14 @@ const styles = StyleSheet.create({
   genderFilter: {
     width: '30%',
     alignSelf: 'center',
-    top:150,
+    top:135,
     left:60,
     zIndex: 2,
     elevation: 2,
   },
 
   statusText:{
-    top:192,
+    top:177,
     right:92,
     fontSize:18,
     fontWeight:"900",
@@ -84,14 +86,14 @@ const styles = StyleSheet.create({
   statusFilter: {
     width: '30%',
     alignSelf: 'center',
-    top:170,
+    top:155,
     left:60,
     zIndex: 1,
     elevation: 1,
   },
 
   lastFilterText:{
-    top:220,
+    top:195,
     fontSize:18,
     fontWeight:"900",
     zIndex: -1,
@@ -101,7 +103,7 @@ const styles = StyleSheet.create({
   lastFilter: {
     width: '30%',
     alignSelf: 'center',
-    top:235,
+    top:210,
     right:100,
   },
   inputView:{
@@ -111,7 +113,7 @@ const styles = StyleSheet.create({
     borderRadius:25,
     height:30,
     justifyContent:"center",
-    top:205,
+    top:180,
     left:70,
     zIndex:-1,
     borderColor:"black",
@@ -125,7 +127,7 @@ const styles = StyleSheet.create({
     textAlignVertical:'center',
   },
   search:{
-    top:240,
+    top:225,
     width:150,
     backgroundColor:"#90e0ef",
     borderRadius:25,
@@ -142,6 +144,24 @@ const styles = StyleSheet.create({
     top:10,
     fontSize: 20,
     right:15
+  },
+
+  resetFilters:{
+    top:235,
+    width:100,
+    backgroundColor:"#90e0ef",
+    borderRadius:25,
+    borderColor:"black",
+    borderWidth:2,
+    height:25,
+    fontSize: 20,
+  },
+
+  resetFiltersText:{
+    fontWeight: 'bold',
+    textAlign:'center',
+    textAlignVertical:'center',
+    fontSize: 15,
   },
   sumbitImage:{
     width:35,
@@ -161,12 +181,12 @@ borderTop:{
   width:370,
   borderWidth:1,
   borderRadius:40,
-  top:165},
+  top:150},
 
   borderBottom:{
     borderBottomColor: 'black',
     width:370,
     borderWidth:1,
     borderRadius:40,
-    top:225}
+    top:210}
 });
