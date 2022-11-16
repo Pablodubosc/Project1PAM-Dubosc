@@ -2,10 +2,8 @@
 import { View, TouchableOpacity, Image, Text, StyleSheet } from 'react-native';
 import { useState } from 'react';
 
-
 export default function Dropdown({ style, options, filterOptions, setOptions }) {
     const [visibility, optionsVisibility] = useState(false);
-
     const dropdownOptions = (option) => {
         optionsVisibility(false);
         setOptions(option);
@@ -40,23 +38,24 @@ const styles = StyleSheet.create({
         fontSize: 17,
         backgroundColor: "#0096c7",
         borderRadius:25,
+        borderColor:'black',
+        borderWidth:2
     },
 
     botonDesplegable: {
         marginLeft: 'auto',
         backgroundColor: "#0096c7",
-        top:1,
-        height:24,
+        height:2,
         width:33,
         right:4,
         borderRadius:20,
     },
 
     moreIcon: {
-        width: 18, 
-        height: 18,
-        top:6,
-        right:-10,
+        width: 20, 
+        height: 20,
+        left:8,
+        top:3,
         backgroundColor: "#0096c7",
     },
 
@@ -65,6 +64,7 @@ const styles = StyleSheet.create({
         left:5,
         textAlignVertical:'center',
         color:"white",
+        textAlign:'center'
     },
     
     filterOptions: {

@@ -1,26 +1,27 @@
 import {View, TouchableOpacity, Image,  StyleSheet,Text,Modal } from 'react-native';
-import { useState } from 'react';
-
+import { setSearchModalVisible } from '../store/Reducers';
+import { useDispatch, useSelector } from 'react-redux';
 // Components
 import Search from './Search';
 
-export default function Topbar({getCharacters}) {
-    const [modalVisible, setModalVisible] = useState("false");
-    const closeSearch = () => {
-        setModalVisible(false);}
+const Topbar = ({getCharacters})=>  {
+   const dispatch = useDispatch();
+   const {searchModalVisible}  = useSelector(state => state.application);
+
     return (
         <View>
-            <TouchableOpacity onPress={() => {setModalVisible(true)}}>
+            <TouchableOpacity onPress={() => {dispatch(setSearchModalVisible(true))}}>
                 <Text style={styles.titulo}>SEARCH RICK & MORTY CHARACTERS</Text>
                 <Image style={styles.sumbitImage} source = {require('../../assets/lupa.png')} />
                 <View style={styles.border}/>
-                <Modal animationType="slide" transparent={false} visible={modalVisible}>
-                    <Search closeSearch={closeSearch} getCharacters={getCharacters}/>
+                <Modal animationType="slide" transparent={false} visible={searchModalVisible}>
+                    <Search getCharacters={getCharacters}/>
                 </Modal>
             </TouchableOpacity>                      
         </View>
     )
 }
+export default Topbar;
 const styles = StyleSheet.create({
     sumbitImage:{
         width:35,
