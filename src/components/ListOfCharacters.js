@@ -1,28 +1,40 @@
-import {View, TouchableOpacity, Image,  StyleSheet,Text,FlatList, } from 'react-native';
-import { useState } from 'react';
-
-
-export default function ListOfCharacters({data,setModalItem,setModalVisible}) {
-    const renderItem = ({item}) => (
-        <View style={styles.characters}>
-          <TouchableOpacity onPress={() => {setModalVisible(true);setModalItem(item)}}>
-            <Image style={styles.image} source={{uri: item.image}} onPress={() => {setModalVisible(true);setModalItem(item)}} />
-            </TouchableOpacity>
-            <Text style={styles.name}>{item.name}</Text>
-        </View>
-    );
+import {View,TouchableOpacity, Image,  StyleSheet,Text,FlatList,Animated } from 'react-native';
+import React, { useEffect, useState } from "react";
+import CharacterItem from './CharacterItem';
+import { useDispatch } from 'react-redux';
+export default function ListOfCharacters({data,getNext,favorites}) {
+  const dispatch = useDispatch();
+  const [dataF, setDataF] = useState([]);
+  useEffect(() => {
+    console.log(data)
+    setDataF(data);
+  }, [data])
+  const removeFromList = (id)  => {
+    let arr = dataF.filter(function(item) {
+      return item.id != id
+    })
+    setDataF(arr);
+};
     return (
       <View>
-      {data && ( <FlatList style={styles.flatlist}
-            key={item => item.id}
-            data={data}
-            renderItem={renderItem}
+      {dataF && ( <FlatList style={styles.flatlist}
+            keyExtractor={item => item.id}
+            data={dataF}
+            renderItem={({ item }) => (
+              <CharacterItem
+                  item={item}
+                  favorite={favorites}
+                  removeFromList={removeFromList}
+              />
+          )}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
+            onEndReached={getNext}
+            onEndReachedThreshold = {0.5}
           />
       )}
-      {!data && (
+      {!dataF && (
         <View>
-            <Text style = {styles.noResults}> No Results Found!! Try searching again </Text>
+            <Text style = {styles.noResults}> No Results Found!!</Text>
         </View>
       )}
     </View>
@@ -30,39 +42,16 @@ export default function ListOfCharacters({data,setModalItem,setModalVisible}) {
 };
 const styles = StyleSheet.create({
     flatlist:{
-        flex:1,
-        top:30, 
-        width:"80%",
-        height:40
+      flexGrow: 0,
+        top:60, 
+        width:350,
+        height:490,
     },
-    name: {
-        textAlign:'center',
-        textAlignVertical:'center',
-        fontSize: 15,
-        fontWeight: 'bold',
-        top:5,
-        height:40
-      },
-      characters: {
-        flex: 1,
-        backgroundColor: '#e0fbfc',
-        alignItems: 'center',
-        justifyContent:'center',
-      },
       separator: {
-        width: '100%',
+        width: '50%',
         height: 2,
+        left:'25%',
         backgroundColor: 'grey',
-      },
-      image: {
-        alignContent:'center',
-        justifyContent:'center',
-        width: 100,
-        height: 100,
-        top: "8%",
-        borderRadius: 20,
-        borderWidth: 1,
-        borderColor:"red"
       },
 
       noResults: {

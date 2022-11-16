@@ -9,6 +9,8 @@ import {
     Modal
   } from "react-native";
 import Dropdown from "./Dropdown";
+import { setSearchModalVisible} from '../store/Reducers';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function Search({closeSearch,getCharacters}) {
     const [text, onChangeText] = useState("");
@@ -16,14 +18,14 @@ export default function Search({closeSearch,getCharacters}) {
     const [genderFilter, setGenderFilter] = useState('none');
     const [statusFilter, setStatusFilter] = useState('none');
 
+    const dispatch = useDispatch();
     const filterChracters= (genderFilter,statusFilter,lastFilter,text) => {
       getCharacters(genderFilter == 'none' ? '' : genderFilter,statusFilter == 'none' ? '' : statusFilter,lastFilter,text)
     }
    return (
         <View style={styles.container}>
+          <View style={styles.borderTop}/>
             <Text style={styles.titulo}>Add filters to search Rick & Morty characters!</Text>
-
-            
             <Text style={styles.genderText}>Filter by gender:</Text>
             <Dropdown style = {styles.genderFilter} options = {['none','male', 'female', 'unknown', 'genderless']} filterOptions = {genderFilter} setOptions = {setGenderFilter} />
 
@@ -36,9 +38,9 @@ export default function Search({closeSearch,getCharacters}) {
             <View style={styles.inputView}>
               <TextInput placeholder="keyword..." style={styles.inputText} placeholderTextColor="white" onChangeText={(text) => {onChangeText(text)}} value={text}></TextInput>
             </View>
-        
-            <TouchableOpacity style={styles.search} onPress={() => {closeSearch(); filterChracters(genderFilter,statusFilter,lastFilter,text)}}>
-              <Text style={styles.searchText}>Search</Text>
+            <View style={styles.borderBottom}/>
+            <TouchableOpacity style={styles.search} onPress={() => {dispatch(setSearchModalVisible(false)); filterChracters(genderFilter,statusFilter,lastFilter,text)}}>
+              <Text style={styles.searchText}>SEARCH</Text>
               <Image style={styles.sumbitImage} source = {require('../../assets/lupa.png')} />
             </TouchableOpacity>
         </View>
@@ -52,41 +54,45 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   titulo:{
-    top:60,
-      fontSize:17,
+    top:120,
+      fontSize:18,
       fontWeight:"900"
   },
 
   genderText:{
-    top:80,
-    fontSize:15,
+    top:175,
+    right:90,
+    fontSize:18,
     fontWeight:"900",
   },
   genderFilter: {
     width: '30%',
     alignSelf: 'center',
-    top:92,
+    top:150,
+    left:60,
     zIndex: 2,
     elevation: 2,
   },
 
   statusText:{
-    top:112,
-    fontSize:15,
+    top:192,
+    right:92,
+    fontSize:18,
     fontWeight:"900",
   },
 
   statusFilter: {
     width: '30%',
     alignSelf: 'center',
-    top:122,
+    top:170,
+    left:60,
     zIndex: 1,
     elevation: 1,
   },
 
   lastFilterText:{
-    top:140,
-    fontSize:15,
+    top:220,
+    fontSize:18,
     fontWeight:"900",
     zIndex: -1,
     elevation: -1,
@@ -95,7 +101,8 @@ const styles = StyleSheet.create({
   lastFilter: {
     width: '30%',
     alignSelf: 'center',
-    top:145
+    top:235,
+    right:100,
   },
   inputView:{
     width:"45%",
@@ -104,10 +111,11 @@ const styles = StyleSheet.create({
     borderRadius:25,
     height:30,
     justifyContent:"center",
-    top:152,
+    top:205,
+    left:70,
     zIndex:-1,
     borderColor:"black",
-    borderWidth:1,
+    borderWidth:2,
   },
   inputText:{
     height:40,
@@ -117,7 +125,7 @@ const styles = StyleSheet.create({
     textAlignVertical:'center',
   },
   search:{
-    top:200,
+    top:240,
     width:150,
     backgroundColor:"#90e0ef",
     borderRadius:25,
@@ -148,4 +156,17 @@ const styles = StyleSheet.create({
     left:100,
     top:-22
 },
+borderTop:{
+  borderBottomColor: 'black',
+  width:370,
+  borderWidth:1,
+  borderRadius:40,
+  top:165},
+
+  borderBottom:{
+    borderBottomColor: 'black',
+    width:370,
+    borderWidth:1,
+    borderRadius:40,
+    top:225}
 });
