@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useEffect} from 'react';
 import ListOfCharacters from '../components/ListOfCharacters';
 import CharacterInfo from "../components/CharacterInfo";
 import {
@@ -12,8 +12,8 @@ import MenuBar from '../components/MenuBar';
 import { useSelector } from 'react-redux';
 
 const Favoritos = ({navigation}) => {
-    const {modalItem, modalCharacterVisible }  = useSelector(state => state.application);
-    const { favs,getCharactersFromFavs } = useApi();
+    const {modalItem, modalCharacterVisible, favs }  = useSelector(state => state.application);
+    const { getCharactersFromFavs } = useApi();
     useEffect(() => {
         getCharactersFromFavs();
       }, [modalCharacterVisible])

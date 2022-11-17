@@ -1,19 +1,21 @@
-import { useState } from 'react';
 import app from '../dbConnection'
-import {ref,getDatabase,get,child,remove,set} from "firebase/database";
-;
+import {ref,getDatabase,get,remove,set} from "firebase/database";
+import { useSelector ,useDispatch} from 'react-redux';
+import { setFavs, setData} from '../store/Reducers';
+
 export function useApi() {
     const db = getDatabase(app);
-    const [data, setData] = useState();
-    const [favs,setFavs]=useState();
+    const dispatch = useDispatch(); 
+    const { favs,data }  = useSelector(state => state.application);
     const getCharactersFromFavs = () => {
         const aux = []
           get(ref(db,'Favoritos')).then((snapshot) => {
             if (snapshot.exists()) {
                 snapshot.forEach((groupSnapshot) => {aux.push(JSON.parse(JSON.stringify(groupSnapshot)))}) //limpia lo recibido de la bd para convertirlo en json
-                setFavs(aux)
+                dispatch(setFavs(aux))
             } else {
                 console.log("No data available");
+                dispatch(setFavs())
             }
             }).catch((error) => {
                 console.error(error);
@@ -24,26 +26,24 @@ export function useApi() {
          fetch('https://rickandmortyapi.com/api/character')
             .then((response) => response.json())
             .then((json) => {
-                setData(json)
+                dispatch(setData(json))
             })
             .catch((error) => {
                 console.log(error);
             })
     }
-
+    
     const getNextCharacters = () => {
         return fetch(data.info.next)
             .then((response) => response.json())
             .then((json) => {
-                setData(prevData => {
-                    let newData = json;
-                    newData.results = [...prevData.results, ...newData.results]
-                    return newData;
-                });
+                let newData = json;
+                newData.results = [...data.results, ...newData.results]
+                dispatch(setData(newData))
             })
             .catch((error) => {
                 if (data.info.next != null){
-                    console.log(error);
+                    console.log('error'+error);
                 }
             })
     }
@@ -52,10 +52,10 @@ export function useApi() {
         return fetch('https://rickandmortyapi.com/api/character/?gender='+genderFilter+"&status="+statusFilter+"&"+lastFilter.toLowerCase()+"="+text)
         .then(response => response.json())
             .then((json) => {
-                setData(json)
+                dispatch(setData(json))
             })
             .catch((error) => {
-                setData({results: null});
+                dispatch(setData({results: null}));
             })
     }
 

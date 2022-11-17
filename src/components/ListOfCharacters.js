@@ -1,12 +1,14 @@
 import {View,TouchableOpacity, Image,  StyleSheet,Text,FlatList,Animated } from 'react-native';
 import React, { useEffect, useState } from "react";
 import CharacterItem from './CharacterItem';
-import { useDispatch } from 'react-redux';
 export default function ListOfCharacters({data,getNext,favorites}) {
+  
   const [dataF, setDataF] = useState([]);
+
   useEffect(() => {
     setDataF(data);
   }, [data])
+
   const removeFromList = (id)  => {
     let arr = dataF.filter(function(item) {
       return item.id != id

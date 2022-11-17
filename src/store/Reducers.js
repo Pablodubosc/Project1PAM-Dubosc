@@ -12,6 +12,8 @@ export const Reducers = createSlice({
         genderFilterOptions: ['no gender','male', 'female', 'unknown', 'genderless'],
         statusFilter : 'no status',
         statusFilterOptions: ['no status','alive', 'dead', 'unknown'],
+        favs : [],
+        data: []
     },
     reducers:{
         setSearchModalVisible: (state,action) =>
@@ -30,17 +32,14 @@ export const Reducers = createSlice({
         {
             if((state.lastFilterOptions).indexOf(action.payload) != -1)
             {
-                console.log('entra last')
                 state.lastFilter = action.payload
             }
             else if((state.genderFilterOptions).indexOf(action.payload) != -1)
             {
-                console.log('entra gender')
                 state.genderFilter = action.payload
             }
             else if((state.statusFilterOptions).indexOf(action.payload) != -1)
             {
-                console.log('entra status')
                 state.statusFilter = action.payload
             }
         },
@@ -50,9 +49,18 @@ export const Reducers = createSlice({
             state.statusFilter = 'no status'
             state.lastFilter = 'name'
         },
+        setFavs:(state,action) =>
+        {
+            state.favs = action.payload
+        },
+        setData:(state,action) =>
+        {
+            state.data = action.payload
+        },
     }
 })
 
-export const {setSearchModalVisible, setModalItem, setModalCharacterVisible, setFilters, resetFilters } = Reducers.actions;
+
+export const {setSearchModalVisible, setModalItem, setModalCharacterVisible, setFilters, resetFilters, setFavs,setData } = Reducers.actions;
 
 export default Reducers.reducer;

@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -13,10 +13,8 @@ import { useSelector } from 'react-redux';
 
 const Menu = ({navigation}) => {
 
-  const {modalItem, modalCharacterVisible}  = useSelector(state => state.application);
-
-  
-  const { data, getCharactersFromApi, getNextCharacters, getFilteredCharacters} = useApi();
+  const {data,modalItem, modalCharacterVisible}  = useSelector(state => state.application);
+  const { getCharactersFromApi, getNextCharacters, getFilteredCharacters} = useApi();
 
   useEffect(() => {
     getCharactersFromApi();

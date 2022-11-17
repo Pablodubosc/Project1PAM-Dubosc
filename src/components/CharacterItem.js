@@ -36,7 +36,7 @@ export default function CharacterItem({item,favorite,removeFromList}) {
             {
                 transform: [{ translateX: value }, { scale: size }],
             },
-        ]}>
+          ]}>
             <TouchableOpacity onPress={() => {dispatch(setModalItem(item)),dispatch(setModalCharacterVisible(true))}}>
               <Image style={styles.image} source={{uri: item.image}} />
             </TouchableOpacity>
