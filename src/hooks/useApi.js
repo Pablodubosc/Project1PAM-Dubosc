@@ -1,37 +1,52 @@
 import app from '../dbConnection'
 import {ref,getDatabase,get,remove,set} from "firebase/database";
 import { useSelector ,useDispatch} from 'react-redux';
-import { setFavs, setData} from '../store/Reducers';
+import { setData, setFavs} from '../store/Reducers';
 
 export function useApi() {
     const db = getDatabase(app);
     const dispatch = useDispatch(); 
-    const { favs,data }  = useSelector(state => state.application);
-    const getCharactersFromFavs = () => {
-        const aux = []
-          get(ref(db,'Favoritos')).then((snapshot) => {
-            if (snapshot.exists()) {
-                snapshot.forEach((groupSnapshot) => {aux.push(JSON.parse(JSON.stringify(groupSnapshot)))}) //limpia lo recibido de la bd para convertirlo en json
-                dispatch(setFavs(aux))
-            } else {
-                console.log("No data available");
-                dispatch(setFavs())
-            }
-            }).catch((error) => {
-                console.error(error);
-            });     
-        };
+    const {favs,data }  = useSelector(state => state.application);
+   
 
-    const getCharactersFromApi = () => {
-         fetch('https://rickandmortyapi.com/api/character')
-            .then((response) => response.json())
-            .then((json) => {
-                dispatch(setData(json))
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-    }
+    const getFavsFromDB = async () => {
+        const aux = [];
+        
+        try {
+          const snapshot = await get(ref(db, 'Favoritos'));
+      
+          if (snapshot.exists()) {
+            snapshot.forEach((groupSnapshot) => {
+              aux.push(JSON.parse(JSON.stringify(groupSnapshot)));
+            });
+            return aux;
+          } else {
+            console.log("No data available");
+            return aux;
+          }
+        } catch (error) {
+          console.error(error);
+          return aux;
+        }
+      };
+      
+      const getCharactersFromApi = async () => {
+        try {
+          const aux = await getFavsFromDB();
+      
+          const response = await fetch('https://rickandmortyapi.com/api/character');
+          const json = await response.json();
+      
+          const withOutFavJson = {
+            ...json,
+            results: json.results.filter((character) => !aux.some((fav) => fav.id === character.id)),
+          };
+      
+          dispatch(setData(withOutFavJson));
+        } catch (error) {
+          console.log(error);
+        }
+      };
     
     const getNextCharacters = () => {
         return fetch(data.info.next)
@@ -52,7 +67,11 @@ export function useApi() {
         return fetch('https://rickandmortyapi.com/api/character/?gender='+genderFilter+"&status="+statusFilter+"&"+lastFilter.toLowerCase()+"="+text)
         .then(response => response.json())
             .then((json) => {
-                dispatch(setData(json))
+                const withOutFavJson = {
+                    ...json,
+                    results: json.results.filter((character) => { return !favs.some((fav) => fav.id === character.id)})
+                  };
+                dispatch(setData(withOutFavJson))
             })
             .catch((error) => {
                 dispatch(setData({results: null}));
@@ -68,8 +87,10 @@ export function useApi() {
           type : item.type,
           gender: item.gender,
         })
-        .then(()=>{console.log("se agrego correctamente " + item.name+' a favoritos')})
-        .catch((error)=>{console.log("hay un error")})
+        .then(()=>{const updatedFavs = [...favs, item];
+            dispatch(setFavs(updatedFavs));
+            console.log("se agrego correctamente " + item.name+' a favoritos')})
+        .catch((error)=>{console.log("hay un error"),console.log(error)})
     )
 
     const writeCharacterComment=(item,text) => (
@@ -83,7 +104,7 @@ export function useApi() {
           comment: text
         })
         .then(()=>{console.log("se agrego correctamente el comentario a " + item.name)})
-        .catch((error)=>{console.log("hay un error")})
+        .catch((error)=>{console.log("hay un error",error)})
     )
 
     const deleteCharacterComment=(item) => (
@@ -100,9 +121,10 @@ export function useApi() {
     )
     const deleteCharacterData=(item) => (
       remove(ref(db, 'Favoritos/' + item.id))
-      .then(()=>{console.log("se elimino correctamente " + item.name + ' de favoritos')})
+      .then(()=>{console.log("se elimino correctamente " + item.name + ' de favoritos'),
+      dispatch(setFavs(favs.filter((fav) => fav.id !== item.id)))})
       .catch((error)=>{console.log("hay un error")})
   )
 
-    return { data,favs,getCharactersFromApi, getNextCharacters, getFilteredCharacters, deleteCharacterData,writeCharacterData,writeCharacterComment,getCharactersFromFavs,deleteCharacterComment };
+    return { data,favs,getCharactersFromApi, getNextCharacters, getFilteredCharacters, deleteCharacterData,writeCharacterData,writeCharacterComment,getFavsFromDB,deleteCharacterComment };
 }

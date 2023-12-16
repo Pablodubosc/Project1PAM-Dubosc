@@ -13,18 +13,18 @@ import { useSelector } from 'react-redux';
 
 const Menu = ({navigation}) => {
 
-  const {data,modalItem, modalCharacterVisible}  = useSelector(state => state.application);
+  const {data,favs,modalItem, modalCharacterVisible}  = useSelector(state => state.application);
   const { getCharactersFromApi, getNextCharacters, getFilteredCharacters} = useApi();
 
-  useEffect(() => {
-    getCharactersFromApi();
-  }, [])
-  
+useEffect(() => {
+  getCharactersFromApi(); 
+}, [favs]);
+
   return (
     
     <View style={styles.container}>     
       <Topbar getCharacters = {getFilteredCharacters}></Topbar>
-       {data && (<ListOfCharacters data={data.results} favorites={false} getNext={getNextCharacters} /*setModalVisible={setModalVisible}*/></ListOfCharacters> )}     
+       {data && (<ListOfCharacters data={data.results} favorites={false} getNext={getNextCharacters}></ListOfCharacters> )}     
       <View>
         <Modal animationType="slide" transparent={false} visible={modalCharacterVisible}>
           <CharacterInfo item={modalItem} favorite={false}/>

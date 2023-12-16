@@ -9,14 +9,25 @@ import {
 } from 'react-native';
 import { useApi } from '../hooks/useApi';
 import MenuBar from '../components/MenuBar';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFavs } from '../store/Reducers';
 
 const Favoritos = ({navigation}) => {
     const {modalItem, modalCharacterVisible, favs }  = useSelector(state => state.application);
-    const { getCharactersFromFavs } = useApi();
+    const { getFavsFromDB } = useApi();
+    const dispatch = useDispatch();
     useEffect(() => {
-        getCharactersFromFavs();
-      }, [modalCharacterVisible])
+      const fetchData = async () => {
+        try {
+          const aux = await getFavsFromDB();
+          dispatch(setFavs(aux));
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+    
+      fetchData();
+    }, [modalCharacterVisible]);
     return (
         <View style={styles.container}>
           <Text style={styles.titulo}>YOUR FAVORITES CHARACTERS</Text>
